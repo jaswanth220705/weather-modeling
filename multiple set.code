@@ -1,0 +1,40 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
+def quadratic_weather_model(time, a, b, c):
+    return a * time**2 + b * time + c
+
+def main():
+    print("Quadratic Weather Modeling")
+
+    with open("weax.csv", 'w') as f:
+        f.write("a,b,c\n")
+        f.write("1,-2,3\n")
+        f.write("0.5,-1,4\n")
+        f.write("2,0,-5\n")
+        f.write("-1,4,0\n")
+        f.write("0.2,-0.5,1\n")
+
+    try:
+        df = pd.read_csv("weax.csv")
+        time_values = list(range(0, 11))
+        plt.figure(figsize=(10, 6))
+
+        for index, row in df.iterrows():
+            a, b, c = row['a'], row['b'], row['c']
+            temp_values = [quadratic_weather_model(t, a, b, c) for t in time_values]
+            plt.plot(time_values, temp_values, marker='o',
+                     linestyle='--', label=f"a={a}, b={b}, c={c}")
+
+        plt.title("Temperature Variation Over Time")
+        plt.xlabel("Time")
+        plt.ylabel("Temperature (°C)")
+        plt.grid(True)
+        plt.xlim(0, 10)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+    except FileNotFoundError:
+        print("File not found. Please make sure 'weax.csv' exists.")
+
+main()
